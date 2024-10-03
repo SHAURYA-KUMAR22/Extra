@@ -1,0 +1,12 @@
+String jsonBody = "{"
+                + "\"model\": \"mistral-7b-instruct\","
+                + "\"conversation_id\": \"0\","
+                + "\"system_message\": \"NONE\","
+                + "\"prompt\": \"hello\","
+                + "\"mode\": \"text-generation\","
+                + "\"temperature\": 0.5,"
+                + "\"sampling\": false,"
+                + "\"max_new_tokens\": 256,"
+                + "\"streaming\": false,"
+                + "\"content_moderators\": [\"illegal\", \"offensive\"]"
+                + "}";
