@@ -3,40 +3,50 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
 
-public class MapToFormattedString {
+public class MapToConcatenatedString {
 
     public static void main(String[] args) {
-        // Example map
+        // Example map with multiple key-value pairs
         Map<String, Object> map = new HashMap<>();
         map.put(" Model", "mistral");
         map.put(" Index", 3);
+        map.put(" AnotherKey", "SomeValue");
+        map.put(" Number", 123);
+        map.put(" IsValid", true);
 
         // Convert map to the desired formatted string
-        String formattedString = convertMapToFormattedString(map);
+        String formattedString = convertMapToConcatenatedString(map);
         
         // Print the final formatted string
         System.out.println(formattedString);
     }
 
-    public static String convertMapToFormattedString(Map<String, Object> map) {
+    public static String convertMapToConcatenatedString(Map<String, Object> map) {
+        StringBuilder result = new StringBuilder();
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // Convert the map to a JSON string
-            String jsonString = objectMapper.writeValueAsString(map);
+        Iterator<Map.Entry<String, Object>> iterator = map.entrySet().iterator();
 
-            // Escape the quotes in the JSON string
-            String escapedString = jsonString.replace("\"", "\\\"");
+        while (iterator.hasNext()) {
+            Map.Entry<String, Object> entry = iterator.next();
+            try {
+                // Convert each key-value pair to JSON and escape quotes
+                String jsonString = objectMapper.writeValueAsString(entry.getValue());
 
-            // Split the string into two parts and add the "+" for concatenation
-            String part1 = escapedString.substring(0, escapedString.indexOf("\\\" Index"));
-            String part2 = escapedString.substring(escapedString.indexOf("\\\" Index"));
+                // Append the key and value in the required format
+                result.append("\"").append(entry.getKey()).append("\": ").append(jsonString);
 
-            // Return the final formatted string with a plus sign in between
-            return "\"" + part1 + "\" + \"" + part2 + "\"";
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
+                // If there are more entries, add " + " for concatenation
+                if (iterator.hasNext()) {
+                    result.append(" + ");
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
+
+        // Wrap the entire result in curly braces
+        return "\"{" + result.toString() + "}\"";
     }
 }
